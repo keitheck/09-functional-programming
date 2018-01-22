@@ -7,7 +7,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = '';
+const conString = 'postgres://localhost:5432/kilovolt';
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', err => {
@@ -122,6 +122,7 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
 //////// ** DATABASE LOADERS ** ////////
 ////////////////////////////////////////
 function loadAuthors() {
+  console.log('loadAuthors triggered');
   fs.readFile('./public/data/hackerIpsum.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
@@ -134,6 +135,7 @@ function loadAuthors() {
 }
 
 function loadArticles() {
+  console.log('loadArticles triggered');
   client.query('SELECT COUNT(*) FROM articles')
   .then(result => {
     if(!parseInt(result.rows[0].count)) {
@@ -156,6 +158,7 @@ function loadArticles() {
 }
 
 function loadDB() {
+  console.log('loadDb triggered');
   client.query(`
     CREATE TABLE IF NOT EXISTS
     authors (
